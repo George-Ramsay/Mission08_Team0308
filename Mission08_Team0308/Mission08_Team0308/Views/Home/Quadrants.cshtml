@@ -1,5 +1,217 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model List<TaskItem>
+
 @{
+    ViewData["Title"] = "Quadrants";
+    var tasks = (Model ?? new List<TaskItem>())
+        .Where(t => !t.Completed)
+        .ToList();
 }
+
+<div class="container py-2">
+    <div class="d-flex justify-content-between align-items-end mb-3 pb-2 border-bottom">
+        <h2 class="mb-0">Time Management Matrix</h2>
+        <span class="badge text-bg-light border text-secondary">Incomplete Tasks</span>
+    </div>
+
+    <div class="card border-2 shadow-sm">
+        <div class="card-body bg-light-subtle p-3">
+            <div class="row g-3 text-center">
+                <div class="col-md-2"></div>
+                <div class="col-md-5">
+                    <div class="bg-white border rounded-3 py-2 fw-semibold text-uppercase small">Urgent</div>
+                </div>
+                <div class="col-md-5">
+                    <div class="bg-white border rounded-3 py-2 fw-semibold text-uppercase small">Not Urgent</div>
+                </div>
+            </div>
+
+            <div class="row g-3 mt-1">
+                <div class="col-md-2 d-flex">
+                    <div class="bg-white border rounded-3 w-100 d-flex align-items-center justify-content-center fw-semibold text-uppercase small px-2">Important</div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="card h-100 border-2">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-1">Quadrant I</h5>
+                            <p class="small text-muted mb-0">Important / Urgent</p>
+                        </div>
+                        <div class="card-body p-2">
+                            @{
+                                var quadrant1 = tasks.Where(t => t.Quadrant == 1).ToList();
+                            }
+                            @if (quadrant1.Any())
+                            {
+                                foreach (var task in quadrant1)
+                                {
+                                    <div class="card border mb-2 shadow-sm">
+                                        <div class="card-body p-3">
+                                            <h6 class="card-title mb-1">@task.Task</h6>
+                                            <p class="card-text text-muted small mb-2">
+                                                Category: @(task.Category?.CategoryName ?? "N/A")<br />
+                                                Due: @(task.DueDate?.ToString("MM/dd/yyyy") ?? "No due date")
+                                            </p>
+                                            <div class="d-flex flex-wrap gap-2">
+                                                <a asp-action="Edit" asp-route-id="@task.TaskItemId" class="btn btn-sm btn-outline-primary">Edit</a>
+                                                <form asp-action="Complete" asp-route-id="@task.TaskItemId" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-success">Complete</button>
+                                                </form>
+                                                <form asp-action="Delete" asp-route-id="@task.TaskItemId" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="alert alert-light border mb-0 text-muted">No incomplete tasks.</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="card h-100 border-2">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-1">Quadrant II</h5>
+                            <p class="small text-muted mb-0">Important / Not Urgent</p>
+                        </div>
+                        <div class="card-body p-2">
+                            @{
+                                var quadrant2 = tasks.Where(t => t.Quadrant == 2).ToList();
+                            }
+                            @if (quadrant2.Any())
+                            {
+                                foreach (var task in quadrant2)
+                                {
+                                    <div class="card border mb-2 shadow-sm">
+                                        <div class="card-body p-3">
+                                            <h6 class="card-title mb-1">@task.Task</h6>
+                                            <p class="card-text text-muted small mb-2">
+                                                Category: @(task.Category?.CategoryName ?? "N/A")<br />
+                                                Due: @(task.DueDate?.ToString("MM/dd/yyyy") ?? "No due date")
+                                            </p>
+                                            <div class="d-flex flex-wrap gap-2">
+                                                <a asp-action="Edit" asp-route-id="@task.TaskItemId" class="btn btn-sm btn-outline-primary">Edit</a>
+                                                <form asp-action="Complete" asp-route-id="@task.TaskItemId" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-success">Complete</button>
+                                                </form>
+                                                <form asp-action="Delete" asp-route-id="@task.TaskItemId" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="alert alert-light border mb-0 text-muted">No incomplete tasks.</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mt-1">
+                <div class="col-md-2 d-flex">
+                    <div class="bg-white border rounded-3 w-100 d-flex align-items-center justify-content-center fw-semibold text-uppercase small px-2">Not Important</div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="card h-100 border-2">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-1">Quadrant III</h5>
+                            <p class="small text-muted mb-0">Not Important / Urgent</p>
+                        </div>
+                        <div class="card-body p-2">
+                            @{
+                                var quadrant3 = tasks.Where(t => t.Quadrant == 3).ToList();
+                            }
+                            @if (quadrant3.Any())
+                            {
+                                foreach (var task in quadrant3)
+                                {
+                                    <div class="card border mb-2 shadow-sm">
+                                        <div class="card-body p-3">
+                                            <h6 class="card-title mb-1">@task.Task</h6>
+                                            <p class="card-text text-muted small mb-2">
+                                                Category: @(task.Category?.CategoryName ?? "N/A")<br />
+                                                Due: @(task.DueDate?.ToString("MM/dd/yyyy") ?? "No due date")
+                                            </p>
+                                            <div class="d-flex flex-wrap gap-2">
+                                                <a asp-action="Edit" asp-route-id="@task.TaskItemId" class="btn btn-sm btn-outline-primary">Edit</a>
+                                                <form asp-action="Complete" asp-route-id="@task.TaskItemId" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-success">Complete</button>
+                                                </form>
+                                                <form asp-action="Delete" asp-route-id="@task.TaskItemId" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="alert alert-light border mb-0 text-muted">No incomplete tasks.</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="card h-100 border-2">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-1">Quadrant IV</h5>
+                            <p class="small text-muted mb-0">Not Important / Not Urgent</p>
+                        </div>
+                        <div class="card-body p-2">
+                            @{
+                                var quadrant4 = tasks.Where(t => t.Quadrant == 4).ToList();
+                            }
+                            @if (quadrant4.Any())
+                            {
+                                foreach (var task in quadrant4)
+                                {
+                                    <div class="card border mb-2 shadow-sm">
+                                        <div class="card-body p-3">
+                                            <h6 class="card-title mb-1">@task.Task</h6>
+                                            <p class="card-text text-muted small mb-2">
+                                                Category: @(task.Category?.CategoryName ?? "N/A")<br />
+                                                Due: @(task.DueDate?.ToString("MM/dd/yyyy") ?? "No due date")
+                                            </p>
+                                            <div class="d-flex flex-wrap gap-2">
+                                                <a asp-action="Edit" asp-route-id="@task.TaskItemId" class="btn btn-sm btn-outline-primary">Edit</a>
+                                                <form asp-action="Complete" asp-route-id="@task.TaskItemId" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-success">Complete</button>
+                                                </form>
+                                                <form asp-action="Delete" asp-route-id="@task.TaskItemId" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="alert alert-light border mb-0 text-muted">No incomplete tasks.</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
