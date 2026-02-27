@@ -19,6 +19,10 @@ namespace Mission08_Assignment.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Map to actual table names in the database
+            modelBuilder.Entity<TaskItem>().ToTable("TaskItem");
+            modelBuilder.Entity<Category>().ToTable("Category");
+
             // Seed Category table so dropdown is pre-populated
             modelBuilder.Entity<Category>().HasData(
                 new Category { CategoryId = 1, CategoryName = "Home" },

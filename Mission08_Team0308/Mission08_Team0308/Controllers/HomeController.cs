@@ -24,11 +24,11 @@ namespace Mission08_Team0308.Controllers
         [HttpGet]
         public IActionResult Quadrants()
         {
-           /* var incompleteTasks = _repository.TaskItems
+            var incompleteTasks = _repository.TaskItems
                 .Where(t => !t.Completed)
-                .ToList();*/
+                .ToList();
 
-            return View(/*incompleteTasks*/);
+            return View(incompleteTasks);
         }
 
         // GET: /Home/Create – show blank form
